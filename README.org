@@ -1,0 +1,9 @@
+* W is a top down adventure/puzzle game with limitless potential
+
+** Game Controls
+  - Arrow keys or WASD for movement
+  - Space uses an item you are standing on or facing (teleporters,
+    doors, and screens can currently be used). Space will also restart
+    the game at a game over screen.
+  - Escape restarts the game regardless of where you are.
+
