@@ -1,0 +1,38 @@
+* Code
+** Game
+*** TODO generalize animations
+Game should have a list of a list of animations which recieve a tick
+(which may or may not cause them to change their state).  animations
+should be able to remove themselves from the animation list.
+
+Implement as a mixin?
+
+
+
+*** TODO better levels
+A level should be a directed graph of rooms.  (room should still be a
+struct containing a vector for tile info
+
+*** TODO implement hooks (started on this but didn't follow through).
+
+*** Possible changes
+  - Figure out how to do the screens better, should they really be
+    able to perform arbitrary changes on the games state?
+  - Rewrite tile.rkt to be class-based?
+
+** Gui
+*** TODO Text support
+Requires me drawing up some fonts.  One large (like current GAME OVER
+font), one small (for dialogues, etc).
+
+** General
+*** NEXT configurable settings
+   - Use dynamic parameters?
+
+* Art
+** TODO Two font sets
+
+* Sound
+
+
+ 
