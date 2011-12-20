@@ -120,6 +120,7 @@
       (set! frames (add1 frames)))
   
   ))
+
 (define (make-solid-bitmap w h col)
   (let ((b (make-bitmap w h)))
     (send* (new bitmap-dc% [bitmap b])

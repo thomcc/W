@@ -147,8 +147,8 @@
   (let ([l (shuffle (for*/list ([row (level-data lo)] [p row] #:when (screen? p)) p))])
     (for ([i (in-range 10)]) 
       (let ((s (random-element l)))
-        (set-screen-on?! s (not (screen-on? s)))
-        ((screen-controls (random-element l)) (level-data lo) #t #t))))
+        (use-screen s)
+        ((screen-controls s) (level-data lo) #t #t))))
   lo)
 
 (define (emptylevel)
