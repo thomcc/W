@@ -171,7 +171,7 @@
          #(l f f w f        f w f f w)
          #(w w w w f        f w w w w)
          #(w f f f f        f f f f w)
-         #(w f s s f        s f f s w)
+         #(w g d d g        d g g d w)
          #(w 0 0 0 0        0 0 0 0 w)  ; replace this one
          ))
 
@@ -186,7 +186,7 @@
     (define (permute-wrong ld) 
       (let ([w (map = solution (map (λ (s) (if (screen-on? s) 1 0)) (get-screens ld)))])
         (for ([p w] [x (in-range 1 9)])
-          (vset! ld 4 x (if p (init-flor) ((random-element `(,init-grass ,init-grass ,init-sand ,init-dirt ,init-dirt ,init-dirt ,init-lava)))))))) 
+          (vset! ld 4 x (if p (init-grass)(init-dirt))))))
     (define (check-ld ld game) 
       (cond [(solved? ld) (send game teleport-player (vref ld 1 7))]
             [(failed? ld) (send game teleport-player (vref ld 1 2))]
