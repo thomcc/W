@@ -1,4 +1,4 @@
-* W is a top down adventure/puzzle game with limitless potential
+* W is a game with limitless potential
 
 ** Information
     W was created as my entry into this [[http://www.ludumdare.com/compo/][Ludum Dare Jam 22]] (See [[https://github.com/thomcc/W/downloads][downloads]]
