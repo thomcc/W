@@ -8,7 +8,7 @@
 (define *width*     800)
 (define *height*    480)
 (define *scale*     5)
-(define *debug*     #t)
+(define *debug*     #f)
 ; could do this much better with macros but no time.
 (define input-handler%
   (class object%
