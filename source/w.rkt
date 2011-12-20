@@ -150,9 +150,9 @@
     (stretchable-width #f)
     (show #t))
   (when *debug*
-    (let ((bblit (make-solid-bitmap 8 8 "blue"))
-          (rblit (make-solid-bitmap 8 8 "red")))
-    (register-collecting-blit canvas 2 2 8 8 bblit rblit)))
+    (let ((bblit (make-solid-bitmap 16 16 "blue"))
+          (wblit (make-solid-bitmap 16 16 "white")))
+    (register-collecting-blit canvas 2 2 16 16 bblit wblit)))
   (send canvas start)
   (void (yield semaphore))
   (send canvas stop);)

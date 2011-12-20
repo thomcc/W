@@ -7,7 +7,6 @@
 (define-values (draw-animation draw-static draw-game-over)
   (let ()
     (define square-size 16)
-    ;(define image-location "res/img.png")
     (define squares
       '((player-r        . (0 . 2))
         (player-d        . (0 . 3))
@@ -17,7 +16,7 @@
         (boulder         . (1 . 0))
         (grass           . (2 . 0))
         (dirt            . (3 . 0))
-        (magic           . (4 . 0))
+        (sand            . (4 . 0))
         (screen-on       . (5 . 0))
         (screen-off      . (6 . 0))
         (lava            . (0 . 1))
@@ -35,7 +34,6 @@
         (up         . #((0 . 4) (1 . 4) (2 . 4) (3 . 4)))
         (left       . #((0 . 5) (1 . 5) (2 . 5) (3 . 5)))
         (zap        . #((0 . 6) (1 . 6) (2 . 6) (3 . 6) (4 . 6) (5 . 6) (6 . 6)))))
-    ;(define the-bitmap the-img)
     (define the-bitmap (read-bitmap image-location 'png/alpha))
     
     (define (draw-a which step x y dc)
@@ -55,6 +53,7 @@
         (send dc draw-bitmap-section the-bitmap 18 12 (* 16 7) 16 64 16)
         (send dc draw-bitmap-section the-bitmap 18 36 (* 16 12) 16 64 16)
         (send dc set-scale sx sy)))
+    
     (values draw-a draw-s draw-go)
     ))
 
@@ -77,6 +76,5 @@
                         dc))))  
   (when (send game over?) (draw-game-over dc)))
                                                
-
 
 

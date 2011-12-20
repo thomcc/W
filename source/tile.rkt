@@ -33,7 +33,7 @@
 (struct door tile (dir locked?)  #:transparent #:mutable) ; dir is either 'ud or 'lr
 
 (define (init-grass [p (cons -1 -1)]) (grass (car p) (cdr p) #f #f #f))
-(define (init-flor [p (cons -1 -1)]) (flor (car p) (cdr p) #f #f #f))
+(define (init-flor  [p (cons -1 -1)]) (flor (car p) (cdr p) #f #f #f))
 (define (init-dirt  [p (cons -1 -1)]) (dirt  (car p) (cdr p) #f #f #f))
 (define (init-lava  [p (cons -1 -1)]) (lava  (car p) (cdr p) #t #f #f))
 (define (init-wall  [p (cons -1 -1)]) (wall  (car p) (cdr p) #f #t #f))
@@ -43,10 +43,12 @@
 (define (init-screen on? [p (cons -1 -1)]) (screen (car p) (cdr p) #f #t #t on? 'none))
 (define (init-door dir [p (cons -1 -1)] [open? #f] [locked? #f])
   (door  (car p) (cdr p) #f (not open?) #t dir locked?))
+
 (define (use-screen s)
   (if (screen-on? s) 
       (screen-off s)
       (screen-on s)))
+
 
 (define (screen-off s)
   (set-screen-on?! s #f))

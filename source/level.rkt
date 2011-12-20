@@ -55,7 +55,7 @@
 (define (lavalevel)
   (let ((ll
          (vector 
-          (vector 'w 'w 0 'w 'w 'w 'w '(v #t #t) 'w 'w)
+          (vector 'w 'w 0 'w 'w 'w 'w '(v #f #t) 'w 'w)
           (vector 'w 'l 'f 'l 'f 'l 'l 'f 'l 'w)
           (vector 'w 'l 'f 'l 'l 'l 'f 'f 'l 'w)
           (vector 'w 'l 'f 'f 'f 'f 'f 'l 'l 'w)
@@ -111,7 +111,7 @@
 (define (screens-off level) (let-values ([(on off) (screens-on+off level)]) off))
 
 (define (lightf x y)
-  (λ (level _ [init? #f])
+  (λ (level _ [init? #f] . rst)
     (let ((nbors (filter screen? (cond [(or (= x 0) (= x 9)) (list (vref level (+ y 1) x) (vref level (- y 1) x))]
                                        [(or (= y 0) (= y 5)) (list (vref level  y (+ x 1)) (vref level y (- x 1)))]
                                        [else '()]))))
@@ -119,7 +119,7 @@
     (let-values ([(on off) (screens-on+off level)]
                  [(ons offs) (on+off-sc-posns level)])
       (unless init?
-        (cond [(= 0 on); y'done lost.
+        (cond [(= 0 on); y'lost.
                (leveldata-for-each
                 (λ (ld x y) 
                   (when (random-boolean) 
@@ -159,23 +159,55 @@
     #(w f f f f f f f f w)
     #(w w w w w w w w w w)))
 
-(define (nxlevel)
-      #(#(w w w w w w w w w w)
-        #(w d d d f f g g g w)
-#((> #f #t) d d d f f g g g w)
-        #(w d d d f f g g g w)
-        #(w d d d f f g g g w)
-        #(w w w w w w w w w w)))
+(define (mzlevel)
+      #(#(w w w w(v #f #t) w w w w w)
+        #(w d d d f        f g g g w)
+#((> #f #t) d d d f        f g g g w)
+        #(w d d d f        f g g g(> #f #t))
+        #(w d d d f        f g g g w)
+        #(w w w w(v #t #f) w w w w w)))
+(define (code-level)
+       #(#(w w w w(v #f #t) w w w w w)
+         #(l f f w f        f w f f w)
+         #(w w w w f        f w w w w)
+         #(w f f f f        f f f f w)
+         #(w f s s f        s f f s w)
+         #(w 0 0 0 0        0 0 0 0 w)  ; replace this one
+         ))
+
+(define (funcvec)
+  (let ()
+    (define solution '(0 1 1 0 1 0 0 1))
+    (define failure  '(1 0 0 1 0 1 1 0))
+    (define (get-screens ld) (build-list 8 (λ (p) (vref ld 5 (add1 p)))))
+    (define (make-state=? s) (λ (ld) (equal? s (map (λ (s) (if (screen-on? s) 1 0)) (get-screens ld)))))
+    (define solved? (make-state=? solution))
+    (define failed? (make-state=? failure))
+    (define (permute-wrong ld) 
+      (let ([w (map = solution (map (λ (s) (if (screen-on? s) 1 0)) (get-screens ld)))])
+        (for ([p w] [x (in-range 1 9)])
+          (vset! ld 4 x (if p (init-flor) ((random-element `(,init-grass ,init-grass ,init-sand ,init-dirt ,init-dirt ,init-dirt ,init-lava)))))))) 
+    (define (check-ld ld game) 
+      (cond [(solved? ld) (send game teleport-player (vref ld 1 7))]
+            [(failed? ld) (send game teleport-player (vref ld 1 2))]
+            )(permute-wrong ld))
+    (define (i-screen x)
+      (let ((s (init-screen #f (cons x 5))))
+        (set-screen-controls! s (λ (ld game . _) (check-ld ld game)))
+        s))
+    (build-vector 10 (λ (x) (if (or (= x 0) (= x 9)) (init-wall) (i-screen x))))))
+; todo: better datastructure for representing levels
+; directed graph?
 
 
 
-
-(define-values (level:lava level:start level:nx level:lights-out)
-  (letrec ((lv (λ () (make-level (lavalevel)  (cons 7 0) `(((7 . -1) . ,st) ((10 . 4) . ,lo)))))
+(define-values (level:lava level:start level:lights-out level:maze level:code)
+  (letrec ((lv (λ () (make-level (lavalevel)  (cons 7 1) `(((7 . -1) . ,st) ((10 . 4) . ,lo)))))
            (st (λ () (make-level (startlevel) (cons 7 3) `(((7 . 5) . ,lv)))))
-           (nx (λ () (make-level (nxlevel) (cons 1 2) '())))
-           (lo (λ () (scramble (make-level (lightsout)  (cons 1 1) `(((10 . 2) . ,nx)))))))
-    (values lv st nx lo)))
+           (mz (λ () (make-level (mzlevel) (cons 1 2)    `(((4 . 6) . ,cl)))))
+           (cl (λ () (let ((l (make-level (code-level) (cons 4 1)  `())))(vector-set! (level-data l) 5 (funcvec)) l) ))
+           (lo (λ () (scramble (make-level (lightsout)  (cons 1 1) `(((10 . 2) . ,mz)))))))
+    (values lv st lo mz cl)))
 
 
 

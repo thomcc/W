@@ -236,13 +236,13 @@
     
     (define (screen-alert t v)
       (cond [(procedure? t)
-             (t (level-data current-level) v)]
+             (t (level-data current-level) this)]
             [(screen? t)
              (set-screen-on?! t v)]
             [(door? t)
              (set-door-locked?! t (not (door-locked? t)))]))
     
-    (define (teleport-player tile)
+    (define/public (teleport-player tile)
       (unless teleporting?
         (let ((t (send player get-loc)))
           (set! teleporting? #t)
