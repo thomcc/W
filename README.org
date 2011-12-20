@@ -24,16 +24,20 @@ If you run Linux wait a day or so and I'll build it up for you too.
 
 **** Any (who happen to already have Racket 5.2 installed)
 
-Alternatively, if you would rather run the source yourself, and have
-Racket version 5.2 or later you should be able to download and run the
-source yourself.  Note that for best performance you should not run
-this within DrRacket, running "gracket source/w.rkt" from the command line
-should set the necessary steps in motion for that to happen.  
+W is written in PLT Racket, a dialect of Lisp, and if you happen to
+already have this installed, you can run the code without downloading
+one of the premade executables. To do this, simply download or clone
+this repository, and run "w.rkt" from within the source directory.
 
-If you do not care, and insist on running it in DrRacket, you can improve
-performance by going to the languages menu and ensuring that both
-Debugging and Profiling are turned off.  From there, open the w.rkt
-file in the source directory and press "run" to start.
+Note that for best performance you should not run this within
+DrRacket, running "gracket source/w.rkt" from the command line should
+set the necessary steps in motion for that to happen.
+
+If you do not wish or know how to run this outside of DrRacket, but
+find that it is running too slow and would like to try to fix it, you can
+improve performance by going to the languages menu and ensuring that
+both Debugging and Profiling are turned off.  Additionally, check
+"populate compiled directories" if it is unchecked.
 
 
 *** Controls 
