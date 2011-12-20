@@ -1,9 +1,47 @@
 * W is a top down adventure/puzzle game with limitless potential
 
-** Game Controls
+** Information
+    W was created as my entry into this [[http://www.ludumdare.com/compo/][Ludum Dare Jam 22]] (See [[https://github.com/thomcc/W/downloads][downloads]]
+    or [[https://github.com/thomcc/W/tree/ldjam][this branch]] for what I submitted, the entry itself is located
+    [[http://www.ludumdare.com/compo/ludum-dare-22/?action=preview&uid=7728][here]]).
+
+    Now that it is complete, I am going to extend the heck out of it.
+
+** How to play
+
+*** Getting W
+
+**** Mac or Windows
+
+If you run Mac or Windows, simply grab the W-App.zip (for Mac) or
+W-Exe.zip (for Windows).  Double click the executable inside, (W.app
+for Mac and W.exe for Windows), and if everything should goes well W
+should open and start!
+
+**** Linux
+
+If you run Linux wait a day or so and I'll build it up for you too.
+
+**** Any (who happen to already have Racket 5.2 installed)
+
+Alternatively, if you would rather run the source yourself, and have
+Racket version 5.2 or later you should be able to download and run the
+source yourself.  Note that for best performance you should not run
+this within DrRacket, running "gracket source/w.rkt" from the command line
+should set the necessary steps in motion for that to happen.  
+
+If you do not care, and insist on running it in DrRacket, you can improve
+performance by going to the languages menu and ensuring that both
+Debugging and Profiling are turned off.  From there, open the w.rkt
+file in the source directory and press "run" to start.
+
+
+*** Controls 
   - Arrow keys or WASD for movement
   - Space uses an item you are standing on or facing (teleporters,
     doors, and screens can currently be used). Space will also restart
     the game at a game over screen.
   - Escape restarts the game regardless of where you are.
+
+
 
