@@ -4,15 +4,11 @@
 (define player%
   (class object%
     (super-new)
-    (init xx yy dir owner)
-    (field [x           -1.0]
-           [y           -1.0]
-           [direction   'down]
-           [step         0]
+    (init-field x y direction game)
+    (field [step         0]
            [tilex       -1]
            [tiley       -1]
-           [dead?       #f]
-           [game        #f])
+           [dead?       #f])
     
     (define (on-move x y)
       (let ((tx (inexact->exact (floor (+ 0.5 x))))
@@ -22,10 +18,10 @@
           (set! tiley ty)
           (on-tile-change tilex tiley))))
     
-    (set! game       owner)
-    (set! direction  dir)
-    (set! x          xx)
-    (set! y          yy)
+   ; (set! game       owner)
+   ; (set! direction  dir)
+   ; (set! x          xx)
+   ; (set! y          yy)
     
     (on-move x y)
 
