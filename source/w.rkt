@@ -54,7 +54,8 @@
            [(#\g #\G)        (set-keys-godmode! pressed p?)]
            [(escape #\q #\Q) (set-keys-restart! pressed p?)]
            #;[(e #\e #\E)      (set-keys-debug! pressed p?)]
-           #;[(#\i #\I)        (set-keys-pause! pressed p?)])))))
+           #;[(#\i #\I)        (set-keys-pause! pressed p?)]
+           )))))
 
 
 (define cvs

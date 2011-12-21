@@ -2,11 +2,7 @@
 
 (provide (all-defined-out))
 
-(define (get-delta dir) 
-  (cdr (assoc dir '((up    . (0 . -1)) 
-                    (down  . (0 . +1))
-                    (left  . (-1 . 0)) 
-                    (right . (+1 . 0))))))
+
 #;(define (replace-all list replacements)
   (map (λ (e) (let ((a (assoc e replacements)))
                 (if a (cdr a) e))) list))
@@ -47,6 +43,12 @@
 (define (pt=? a b)
   (and (= (car a) (car b))
        (= (cdr a) (cdr b))))
+(define (pt->values p) ; ugh i should probably make these structs
+  (values (car p) (cdr p)))
+(define values->pt cons) ; for symmetry, even if it is dumb
+(define (pt-mod p m)
+  (cons (modulo (car p) (car m))
+        (modulo (cdr p) (cdr m))))
 (define-syntax-rule (inc! x v) (set! x (+ x v)))
 (define-syntax-rule (dec! x v) (set! x (- x v)))
 
@@ -56,6 +58,28 @@
 
 (define (random-element lst) 
   (list-ref lst (random (length lst))))
+(define (clamp x min max)
+  (cond [(< x min) min] [(> x max) max] [#t x]))
 
 
+(define (exit-dir x y)
+  (cond [(<= x 0) 'left] [(>= x 9) 'right] [(<= y 0) 'up] [(>= y 5) 'down] [else 'none]))
 
+(define (get-delta dir) 
+  (cdr (assoc dir '((up    . (0 . -1)) 
+                    (down  . (0 . +1))
+                    (left  . (-1 . 0)) 
+                    (right . (+1 . 0))))))
+
+(define (opposite dir)
+  (case dir 
+    [(up) 'down]
+    [(down) 'up]
+    [(left) 'right]
+    [(right) 'left]
+    [else (error 'opposite "not a direction! ~a" dir)]))
+
+(define (wrap-around x y [xoff 0] [yoff 0])
+  (define-values ( xmax  ymax) (values 10 6))
+  (let ((d (get-delta (exit-dir x y) #;(opposite (exit-dir x y)))))
+    (pt->values (pt-mod (pt+ (cons x y) d) (cons xmax ymax)))))

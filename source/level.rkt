@@ -168,12 +168,24 @@
         #(w w w w(v #t #f) w w w w w)))
 (define (code-level)
        #(#(w w w w(v #f #t) w w w w w)
-         #(l f f w f        f w f f w)
+         #(f f f w f        f w f f f)
          #(w w w w f        f w w w w)
          #(w f f f f        f f f f w)
          #(w g d d g        d g g d w)
          #(w 0 0 0 0        0 0 0 0 w)  ; replace this one
          ))
+(define (INFINITE-GREEN-PASTURES)
+  #(#(d d d g g d d g g g)
+    #(g d g g g d g d g g)
+    #(g d g g g d d g g g)
+    #(g g d d d g g d d d)
+    #(g g d g d g g d g d)
+    #(g g d d d g g d d d)))
+(define (mk-igp)
+  (make-level (INFINITE-GREEN-PASTURES) (cons 1 1) 'wrap-around))
+  
+
+
 
 (define (funcvec)
   (let ()
@@ -205,7 +217,10 @@
   (letrec ((lv (λ () (make-level (lavalevel)  (cons 7 1) `(((7 . -1) . ,st) ((10 . 4) . ,lo)))))
            (st (λ () (make-level (startlevel) (cons 7 3) `(((7 . 5) . ,lv)))))
            (mz (λ () (make-level (mzlevel) (cons 1 2)    `(((4 . 6) . ,cl)))))
-           (cl (λ () (let ((l (make-level (code-level) (cons 4 1)  `())))(vector-set! (level-data l) 5 (funcvec)) l) ))
+           (cl (λ () (let ((l (make-level (code-level) 
+                                          (cons 4 1)  
+                                          `(((-1 . 1) . ,mk-igp) ((10 . 1) . ,mk-igp)))))
+                       (vector-set! (level-data l) 5 (funcvec)) l) ))
            (lo (λ () (scramble (make-level (lightsout)  (cons 1 1) `(((10 . 2) . ,mz)))))))
     (values lv st lo mz cl)))
 

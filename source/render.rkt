@@ -3,6 +3,8 @@
 (require racket/runtime-path)
 (provide render)
 
+
+
 (define-runtime-path image-location "../res/img.png")
 (define-values (draw-animation draw-static draw-game-over)
   (let ()

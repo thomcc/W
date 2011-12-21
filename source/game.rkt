@@ -32,12 +32,12 @@
     (on-move x y)
 
     ; constant
-    (define speed     0.06)
-    (define friction  0.10)
+    (define speed           0.06)
+    (define friction        0.10)
     (define hit-right       0.00)
     (define hit-left       -0.05)
     (define hit-foot        0.40)
-    (define hit-head        0.00)
+    (define hit-head        -0.10)
     
     (define motion 0.0)
     
@@ -119,10 +119,7 @@
             (x1 (inexact->exact (floor (+ xx 0.5    hit-right))))
             (y0 (inexact->exact (floor (+ yy 0.5 (- hit-head)))))
             (y1 (inexact->exact (floor (+ yy 0.5    hit-foot)))))
-        (when (or (send game deadly? x0 y0)
-                  (send game deadly? x1 y0)
-                  (send game deadly? x0 y1)
-                  (send game deadly? x1 y1))
+        (when (check-deadly x0 y0 x1 y1)
           (die))
         (and (not dead?)
              (not (send game blocked? x0 y0))
@@ -130,7 +127,11 @@
              (not (send game blocked? x0 y1))
              (not (send game blocked? x1 y1)))
         ))
-    
+    (define (check-deadly x0 y0 x1 y1)
+      (or (send game deadly? x0 y0)
+          (send game deadly? x1 y0)
+          (send game deadly? x0 y1)
+          (send game deadly? x1 y1)))
             
     (define/public (get-draw-info) (values x y direction step))
     
@@ -207,8 +208,16 @@
       (do-tick keys))
     
     (define/public (tile-changed tx ty)
-      (let ((change-level? (alist-get (cons tx ty) (level-exits current-level))))
-        (when change-level? (set-level change-level?)))
+      (cond [(list? (level-exits current-level))
+             (let ((change-level? (alist-get (cons tx ty) (level-exits current-level))))
+               (when change-level? (set-level change-level?)))]
+            [(symbol? (level-exits current-level))
+             (case (level-exits current-level)
+               [(wrap-around) (when (or (= tx -1) (= ty -1) (= ty 6) (= tx 10))
+                                (call-with-values (λ () (wrap-around (clamp tx 0 9) (clamp ty 0 6)))
+                                                  (λ (x y) (send player set-pos x y))))])])
+      
+ 
       (send player check-spot))
     
     (define (usable? p)
@@ -284,11 +293,11 @@
         (λ (keys)
           (cond [teleporting? (continue-teleporting)]
                 [(member 'use keys)
-                 (unless using? 
+                 (unless using?
                    (set! using? #t) 
                    (use))]
                 [else (set! using? #f)
-                      (send player tick 
+                      (send player tick
                             (member 'up keys) 
                             (member 'down keys)
                             (member 'left keys) 
