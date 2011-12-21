@@ -1,6 +1,7 @@
 #lang racket/base
 (require racket/gui/base
          racket/class
+         racket/set
          "utils.rkt"
          "render.rkt"
          "game.rkt"
@@ -27,17 +28,26 @@
       #:transparent
       #:mutable)
     (define pressed (keys))
-    (define (keys->list ks)
-      (filter (λ (k) (not (void? k)))
-              `(,(when (keys-up ks) 'up)
-                ,(when (keys-down ks) 'down)
-                ,(when (keys-left ks) 'left)
-                ,(when (keys-right ks) 'right)
-                ,(when (and *debug* (keys-godmode ks)) 'godmode)
-                ,(when (keys-restart ks) 'restart)
-                ,(when (keys-use ks) 'use))))
+    (define (keys->set ks)
+      (set-remove (seteq (when (keys-up ks) 'up)
+                     (when (keys-down ks) 'down)
+                     (when (keys-left ks) 'left)
+                     (when (keys-right ks) 'right)
+                     (when (and *debug* (keys-godmode ks)) 'godmode)
+                     (when (keys-restart ks) 'restart)
+                     (when (keys-use ks) 'use))
+              (void)))
+;;    (define (keys->list ks)
+;;      (filter (λ (k) (not (void? k)))
+;;              `(,(when (keys-up ks) 'up)
+;;                ,(when (keys-down ks) 'down)
+;;                ,(when (keys-left ks) 'left)
+;;                ,(when (keys-right ks) 'right)
+;;                ,(when (and *debug* (keys-godmode ks)) 'godmode)
+;;                ,(when (keys-restart ks) 'restart)
+;;                ,(when (keys-use ks) 'use))))
     (define/public (active-keys)
-      (keys->list pressed))
+      (keys->set pressed))
     (define/public (on-char ev)
       (let* ([p? (not (eq? 'release (send ev get-key-code)))]
              [kc (if p? (send ev get-key-code) (send ev get-key-release-code))])
@@ -73,8 +83,9 @@
     (define timer #f)
     (define/override (on-char ev)
       (send input-handler on-char ev)
-      (when (or (and game-over? (member 'use (send input-handler active-keys)))
-                (member 'restart (send input-handler active-keys)))
+      (when (or (and game-over? 
+                     (set-member? (send input-handler active-keys) 'use))
+                (set-member? (send input-handler active-keys) 'restart))
         (set! game-over? #f)
         
         (set! game (make-object game%)))
@@ -83,7 +94,7 @@
       (refresh))
     (define/public (run)
       (unless abort?
-        (when (member 'abort (send input-handler active-keys)) 
+        (when (set-member? (send input-handler active-keys) 'abort) 
           (set! abort? #t))
         (refresh)))
     (define/public (start)

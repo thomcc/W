@@ -1,5 +1,10 @@
 #lang racket/base
-(require racket/class "utils.rkt" "tile.rkt" "level.rkt" "player.rkt")
+(require racket/class 
+         racket/set
+         "utils.rkt" 
+         "tile.rkt" 
+         "level.rkt" 
+         "player.rkt")
 (provide game%)
 
 
@@ -160,14 +165,14 @@
       (let ((using? #f)) ; prevents use from repeatedly firing
         (λ (keys)
           (cond [teleporting? (continue-teleporting)]
-                [(member 'use keys)
+                [(set-member? keys 'use)
                  (unless using?
                    (set! using? #t) 
                    (use))]
                 [else (set! using? #f)
                       (send player tick
-                            (member 'up keys) 
-                            (member 'down keys)
-                            (member 'left keys) 
-                            (member 'right keys))]))))
+                            (set-member? keys 'up) 
+                            (set-member? keys 'down)
+                            (set-member? keys 'left) 
+                            (set-member? keys 'right))]))))
     ))
