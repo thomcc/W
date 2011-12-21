@@ -10,6 +10,10 @@
            [tiley       -1]
            [dead?       #f])
     
+    (define motion 0.0) 
+    ; private field for calculating the current part of the animation
+    ; (should the player even know about this?)
+    
     (define (on-move x y)
       (let ((tx (inexact->exact (floor (+ 0.5 x))))
             (ty (inexact->exact (floor (+ 0.5 y)))))
@@ -17,11 +21,6 @@
           (set! tilex tx) 
           (set! tiley ty)
           (on-tile-change tilex tiley))))
-    
-   ; (set! game       owner)
-   ; (set! direction  dir)
-   ; (set! x          xx)
-   ; (set! y          yy)
     
     (on-move x y)
 
@@ -33,7 +32,6 @@
     (define hit-foot         0.46)
     (define hit-head        -0.30)
     
-    (define motion 0.0)
     
     (define/public (get-loc) (cons tilex tiley))
     (define/public (get-dir) direction)
