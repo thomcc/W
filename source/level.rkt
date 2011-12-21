@@ -58,7 +58,7 @@
           (vector 'w 'w 0 'w 'w 'w 'w '(v #f #t) 'w 'w)
           (vector 'w 'l 'f 'l 'f 'l 'l 'f 'l 'w)
           (vector 'w 'l 'f 'l 'l 'l 'f 'f 'l 'w)
-          (vector 'w 'l 'f 'f 'f 'f 'f 'l 'l 'w)
+          (vector 'w 'l 'f 'f 'f 'f 'f 'w 'l 'w)
           (vector 'w '(t 4 . 1) 'f 'l 'l 'l 'l  'l 'f '(> #f #f))
           (vector 'w 'w 'w 'w 'w 'w 'w 'w 'w 'w))))
     (vset! ll 0 2 (cons 0 ff))
