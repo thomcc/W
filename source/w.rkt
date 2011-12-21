@@ -1,5 +1,6 @@
-#lang racket/gui
-(require racket/flonum racket/fixnum 
+#lang racket/base
+(require racket/gui/base
+         racket/class
          "utils.rkt"
          "bitmanager.rkt"
          "game.rkt"
@@ -9,7 +10,9 @@
 (define *height*    480)
 (define *scale*     5)
 (define *debug*     #f)
-; could do this much better with macros but no time.
+
+
+
 (define input-handler%
   (class object%
     (super-new)
@@ -27,16 +30,16 @@
       #:mutable)
     (define pressed (keys))
     (define (keys->list ks)
-      (filter-not void?
-                  `(,(when (keys-up ks) 'up)
-                    ,(when (keys-down ks) 'down)
-                    ,(when (keys-left ks) 'left)
-                    ,(when (keys-right ks) 'right)
-                    ,(when (keys-pause ks) 'pause)
-                    ,(when (keys-godmode ks) 'godmode)
-                    ,(when (keys-restart ks) 'restart)
-                    ,(when (keys-debug ks) 'debug)
-                    ,(when (keys-use ks) 'use))))
+      (filter (λ (k) (not (void? k)))
+              `(,(when (keys-up ks) 'up)
+                ,(when (keys-down ks) 'down)
+                ,(when (keys-left ks) 'left)
+                ,(when (keys-right ks) 'right)
+                ,(when (keys-pause ks) 'pause)
+                ,(when (keys-godmode ks) 'godmode)
+                ,(when (keys-restart ks) 'restart)
+                ,(when (keys-debug ks) 'debug)
+                ,(when (keys-use ks) 'use))))
     (define/public (active-keys)
       (keys->list pressed))
     (define/public (on-char ev)
@@ -128,8 +131,10 @@
       (clear))
     b))
 
-;(define (start)
+(define (start)
+  
   (define semaphore (make-semaphore 0))
+  
   (define frame 
     (make-object
         (class frame%
@@ -139,9 +144,6 @@
           (super-new)) *game-name*))
   
   (define canvas (make-object cvs frame))
-  #;(send* canvas 
-    (min-width *width*)
-    (min-height *height*))
   
   (send* frame 
     (min-width *width*)
@@ -149,12 +151,19 @@
     (stretchable-height #f)
     (stretchable-width #f)
     (show #t))
+  
   (when *debug*
     (let ((bblit (make-solid-bitmap 16 16 "blue"))
           (wblit (make-solid-bitmap 16 16 "white")))
     (register-collecting-blit canvas 2 2 16 16 bblit wblit)))
+
   (send canvas start)
   (void (yield semaphore))
-  (send canvas stop);)
+  (send canvas stop))
 
-;(start)
+(start)
+
+
+
+
+

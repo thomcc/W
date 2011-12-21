@@ -1,4 +1,4 @@
-#lang racket
+#lang racket/base
 (require racket/class "utils.rkt" "tile.rkt" "level.rkt")
 (provide game% player%)
 

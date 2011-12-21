@@ -1,5 +1,5 @@
-#lang racket
-(require racket/class "utils.rkt" "tile.rkt")
+#lang racket/base
+(require racket/list racket/class "utils.rkt" "tile.rkt")
 (provide (all-defined-out))
 (struct level (data spawn exits) #:transparent #:mutable)
 
@@ -9,7 +9,7 @@
          [screens '()]
          [v (for/vector ([row sh] [y (in-naturals)])
               (for/vector ([p row][x (in-naturals)])
-                (cond [(cons? p)
+                (cond [(pair? p)
                        (case (car p)
                          [(t) ; teleport contains the position of its destination.
                           (let ((tt (init-teleport (cons x y))))
