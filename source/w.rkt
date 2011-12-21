@@ -21,9 +21,7 @@
                   [left  #:auto] 
                   [right #:auto] 
                   [restart #:auto]
-                  [pause #:auto] 
                   [godmode #:auto]
-                  [debug #:auto]
                   [use   #:auto]) 
       #:auto-value #f
       #:transparent
@@ -35,10 +33,8 @@
                 ,(when (keys-down ks) 'down)
                 ,(when (keys-left ks) 'left)
                 ,(when (keys-right ks) 'right)
-                ,(when (keys-pause ks) 'pause)
-                ,(when (keys-godmode ks) 'godmode)
+                ,(when (and *debug* (keys-godmode ks)) 'godmode)
                 ,(when (keys-restart ks) 'restart)
-                ,(when (keys-debug ks) 'debug)
                 ,(when (keys-use ks) 'use))))
     (define/public (active-keys)
       (keys->list pressed))
@@ -46,15 +42,13 @@
       (let* ([p? (not (eq? 'release (send ev get-key-code)))]
              [kc (if p? (send ev get-key-code) (send ev get-key-release-code))])
          (case kc
-           [(up #\w #\W)     (set-keys-up!    pressed p?)]
-           [(down #\s #\S)   (set-keys-down!  pressed p?)]
-           [(right #\d #\D)  (set-keys-right! pressed p?)]
-           [(left #\a #\A)   (set-keys-left!  pressed p?)]
-           [(space #\space)  (set-keys-use!   pressed p?)]
+           [(up #\w #\W)     (set-keys-up!      pressed p?)]
+           [(down #\s #\S)   (set-keys-down!    pressed p?)]
+           [(right #\d #\D)  (set-keys-right!   pressed p?)]
+           [(left #\a #\A)   (set-keys-left!    pressed p?)]
+           [(space #\space)  (set-keys-use!     pressed p?)]
            [(#\g #\G)        (set-keys-godmode! pressed p?)]
            [(escape #\q #\Q) (set-keys-restart! pressed p?)]
-           #;[(e #\e #\E)      (set-keys-debug! pressed p?)]
-           #;[(#\i #\I)        (set-keys-pause! pressed p?)]
            )))))
 
 
