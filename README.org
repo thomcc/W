@@ -13,14 +13,11 @@
 
 **** Mac or Windows
 
-If you run Mac or Windows, simply grab the W-App.zip (for Mac) or
-W-Exe.zip (for Windows).  Double click the executable inside, (W.app
-for Mac and W.exe for Windows), and if everything should goes well W
-should open and start!
-
-**** Linux
-
-If you run Linux wait a day or so and I'll build it up for you too.
+If you run Mac, Linux (64 bit), or Windows, simply grab the W-App.zip
+(for Mac), W-Lin.tar.gz (for 64 bit Linux), or W-Exe.zip (for
+Windows). Double click the executable inside, (W.app for Mac and W.exe
+for Windows), and if everything should goes well W should open and
+start!
 
 **** Any (who happen to already have Racket 5.2 installed)
 
