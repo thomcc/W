@@ -22,6 +22,8 @@
 
 (struct grass tile () #:transparent #:mutable)
 (struct flor tile  () #:transparent #:mutable)
+(struct yes-f tile () #:transparent #:mutable);; todo
+(struct no-f tile  () #:transparent #:mutable);; these, but better
 (struct dirt tile  () #:transparent #:mutable)
 (struct lava tile  () #:transparent #:mutable)
 (struct wall tile  () #:transparent #:mutable)
@@ -31,14 +33,25 @@
 (struct screen   tile (on? controls) #:transparent #:mutable)
 (struct teleport tile (dest)     #:transparent #:mutable)
 (struct door tile (dir locked?)  #:transparent #:mutable) ; dir is either 'ud or 'lr
+(define (init-plain ctor)
+  (λ ([p (cons -1 -1)]) (ctor (car p) (cdr p) #f #f #f)))
+(define init-grass (init-plain grass))
+(define init-flor  (init-plain flor))
+(define init-sand  (init-plain sand))
+(define init-dirt  (init-plain dirt))
+(define init-test  (init-plain test))
+(define init-yes-f (init-plain yes-f))
+(define init-no-f  (init-plain no-f))
 
-(define (init-grass [p (cons -1 -1)]) (grass (car p) (cdr p) #f #f #f))
-(define (init-flor  [p (cons -1 -1)]) (flor (car p) (cdr p) #f #f #f))
-(define (init-dirt  [p (cons -1 -1)]) (dirt  (car p) (cdr p) #f #f #f))
+;(define (init-grass [p (cons -1 -1)]) (grass (car p) (cdr p) #f #f #f))
+;(define (init-flor  [p (cons -1 -1)]) (flor (car p) (cdr p) #f #f #f))
+
+;(define (init-flor  [p (cons -1 -1)]) (flor (car p) (cdr p) #f #f #f))
+;(define (init-dirt  [p (cons -1 -1)]) (dirt  (car p) (cdr p) #f #f #f))
 (define (init-lava  [p (cons -1 -1)]) (lava  (car p) (cdr p) #t #f #f))
 (define (init-wall  [p (cons -1 -1)]) (wall  (car p) (cdr p) #f #t #f))
-(define (init-test  [p (cons -1 -1)]) (test  (car p) (cdr p) #f #f #f))
-(define (init-sand  [p (cons -1 -1)]) (sand  (car p) (cdr p) #f #f #f))
+;(define (init-test  [p (cons -1 -1)]) (test  (car p) (cdr p) #f #f #f))
+;(define (init-sand  [p (cons -1 -1)]) (sand  (car p) (cdr p) #f #f #f))
 (define (init-teleport [p (cons -1 -1)]) (teleport (car p) (cdr p) #f #f #t 'none))
 (define (init-screen on? [p (cons -1 -1)]) (screen (car p) (cdr p) #f #t #t on? 'none))
 (define (init-door dir [p (cons -1 -1)] [open? #f] [locked? #f])

@@ -82,6 +82,7 @@
       (when (or (and game-over? (member 'use (send input-handler active-keys)))
                 (member 'restart (send input-handler active-keys)))
         (set! game-over? #f)
+        
         (set! game (make-object game%)))
       
       (send input-handler on-char ev)

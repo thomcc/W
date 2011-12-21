@@ -21,6 +21,8 @@
         (sand            . (4 . 0))
         (screen-on       . (5 . 0))
         (screen-off      . (6 . 0))
+        (yes-f           . (7 . 0))
+        (no-f            . (8 . 0))
         (lava            . (0 . 1))
         (teleport        . (1 . 1))
         (flor            . (2 . 1))

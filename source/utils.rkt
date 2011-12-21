@@ -63,19 +63,22 @@
 
 
 (define (exit-dir x y)
-  (cond [(<= x 0) 'left] [(>= x 9) 'right] [(<= y 0) 'up] [(>= y 5) 'down] [else 'none]))
+  ;(let ([x0? (<= x 0)] [x9? (>= x 9)]
+  ;      [y0? (<= y 0)] [y5? (>= y 5)])
+  ;  (cond [(and x0? y0?)  
+  (cond [(= x 0) 'left] [(>= x 9) 'right] [(= y 0) 'up] [(>= y 5) 'down] [else (printf "dont know what to do for ~a, ~a~n" x y) 'up]))
 
 (define (get-delta dir) 
-  (cdr (assoc dir '((up    . (0 . -1)) 
+  (alist-get dir '((up    . (0 . -1)) 
                     (down  . (0 . +1))
                     (left  . (-1 . 0)) 
-                    (right . (+1 . 0))))))
+                    (right . (+1 . 0)))))
 
 (define (opposite dir)
   (case dir 
-    [(up) 'down]
-    [(down) 'up]
-    [(left) 'right]
+    [(up)    'down]
+    [(down)  'up]
+    [(left)  'right]
     [(right) 'left]
     [else (error 'opposite "not a direction! ~a" dir)]))
 

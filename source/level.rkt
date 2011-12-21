@@ -28,6 +28,8 @@
                          [(d) (init-dirt (cons x y))]
                          [(l) (init-lava (cons x y))]
                          [(w) (init-wall (cons x y))]
+                         [(y) (init-yes-f (cons x y))]
+                         [(n) (init-no-f  (cons x y))]
                          [(s) (init-sand (cons x y))])])))])
     (for-each (λ (t) (set-teleport-dest! (car t) (vref v (cddr t) (cadr t)))) teles)
     (for-each (λ (s) (set-screen-controls! (car s) (if (procedure? (cdr s)) (cdr s)
@@ -171,7 +173,7 @@
          #(f f f w f        f w f f f)
          #(w w w w f        f w w w w)
          #(w f f f f        f f f f w)
-         #(w g d d g        d g g d w)
+         #(w y n n y        n y y n w)
          #(w 0 0 0 0        0 0 0 0 w)  ; replace this one
          ))
 (define (INFINITE-GREEN-PASTURES)
@@ -198,7 +200,7 @@
     (define (permute-wrong ld) 
       (let ([w (map = solution (map (λ (s) (if (screen-on? s) 1 0)) (get-screens ld)))])
         (for ([p w] [x (in-range 1 9)])
-          (vset! ld 4 x (if p (init-grass)(init-dirt))))))
+          (vset! ld 4 x (if p (init-yes-f)(init-no-f))))))
     (define (check-ld ld game) 
       (cond [(solved? ld) (send game teleport-player (vref ld 1 7))]
             [(failed? ld) (send game teleport-player (vref ld 1 2))]
