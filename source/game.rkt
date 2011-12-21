@@ -32,12 +32,12 @@
     (on-move x y)
 
     ; constant
-    (define speed           0.06)
-    (define friction        0.10)
-    (define hit-right       0.00)
-    (define hit-left       -0.05)
-    (define hit-foot        0.40)
-    (define hit-head        -0.10)
+    (define speed            0.06)
+    (define friction         0.10)
+    (define hit-right        0.00)
+    (define hit-left        -0.05)
+    (define hit-foot         0.46)
+    (define hit-head        -0.30)
     
     (define motion 0.0)
     
@@ -214,14 +214,14 @@
             [(symbol? (level-exits current-level))
              (case (level-exits current-level)
                [(wrap-around) (when (or (= tx -1) (= ty -1) (= ty 6) (= tx 10))
-                                (call-with-values (λ () (wrap-around (clamp tx 0 9) (clamp ty 0 6)))
+                                (call-with-values (λ () (wrap-around (clamp tx 0 9) (clamp ty 0 5)))
                                                   (λ (x y) (send player set-pos x y))))])])
       
  
       (send player check-spot))
     
     (define (usable? p)
-      (if (not (in-range (car p) (cdr p))) 
+      (if (not (in-range? (car p) (cdr p))) 
           #f 
           (tile-usable? (vref (level-data current-level) (cdr p) (car p)))))
     
