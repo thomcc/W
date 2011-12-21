@@ -2,7 +2,7 @@
 (require racket/gui/base
          racket/class
          "utils.rkt"
-         "bitmanager.rkt"
+         "render.rkt"
          "game.rkt"
          "sound.rkt")
 (define *game-name* "W")
