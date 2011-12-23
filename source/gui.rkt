@@ -5,9 +5,8 @@
          "utils.rkt"
          "render.rkt"
          "game.rkt"
-         "sound.rkt")
-(define *scale*     5)
-(define *debug*    #f)
+         "sound.rkt"
+         "params.rkt")
 (provide cvs)
 (define input-handler%
   (class object%
@@ -28,7 +27,7 @@
                      (when (keys-down ks) 'down)
                      (when (keys-left ks) 'left)
                      (when (keys-right ks) 'right)
-                     (when (and *debug* (keys-godmode ks)) 'godmode)
+                     (when (and (*debug*) (keys-godmode ks)) 'godmode)
                      (when (keys-restart ks) 'restart)
                      (when (keys-use ks) 'use))
               (void)))
@@ -98,7 +97,8 @@
           (send timer stop))))
     
     (define/override (on-paint)
-      (when (and *debug* (>= (- (current-inexact-milliseconds) millis) 3000.0))
+      (when (and (*debug*) 
+                 ((- (current-inexact-milliseconds) millis) . >= . 3000.0))
         (printf "~a frames per second   ~a ticks per second~n" 
                 (floor (/ frames 3)) (floor (/ ticks 3)))
         (set! millis (current-inexact-milliseconds))

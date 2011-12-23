@@ -2,11 +2,8 @@
 (require racket/gui/base
          racket/class
          "gui.rkt"
-         "utils.rkt")
-(define *game-name* "W")
-(define *width*     800)
-(define *height*    480)
-(define *debug*     #f)
+         "utils.rkt"
+         "params.rkt")
 
 
 (define (make-solid-bitmap w h col)
@@ -16,8 +13,8 @@
       (clear))
     b))
 
-(define (start)
-  
+(define (main)
+  (*debug* #t)
   (define semaphore (make-semaphore 0))
   
   (define frame 
@@ -47,7 +44,7 @@
   (void (yield semaphore))
   (send canvas stop))
 
-(start)
+(main)
 
 
 
