@@ -69,11 +69,8 @@
                      (set-member? (send input-handler active-keys) 'use))
                 (set-member? (send input-handler active-keys) 'restart))
         (set! game-over? #f)
-        
         (set! game (make-object game%)))
-      
-      (send input-handler on-char ev)
-      (refresh))
+      )
     
     (define/public (run) 
       (refresh))
