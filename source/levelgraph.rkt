@@ -9,17 +9,26 @@
   (class object% (super-new)
     (field [paths-out '()]
            [paths-in  '()]
-           [room-data #f])
+           [room-data  #f])
+    
     (define/public (add-outgoing path) (set! paths-out (cons path paths-out)))
     (define/public (add-incoming path) (set! paths-in (cons path paths-in)))
+    (define/public (set-data rdata) (set! room-data rdata))
+    
     (define/public (get-outgoing) paths-out)
     (define/public (get-incoming) paths-in)
+    (define/public (get-data)     room-data)
+    
     ))
 
 (define path%
   (class object% (super-new)
-    (field [source #f]
-           [dest   #f])
+    (init-field source dest type) 
+    (send source add-outgoing this)
+    (send dest   add-incoming this)
+    (define/public (get-rooms) (cons source dest))
+    (define/public (get-type) type)
+    
     
     
     ))
