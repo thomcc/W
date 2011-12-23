@@ -58,10 +58,7 @@
     (define pause? #f)
     (define game (make-object game%))
     (define millis (current-inexact-milliseconds))
-    (define tickmillis (current-inexact-milliseconds))
     (define frames 0)
-    (define ticks 0)
-    (define tick? #t)
     (define abort? #f)
     (define game-over? #f)
     (define running? #f)
@@ -86,7 +83,7 @@
       (unless running?
         (set! running? #t)
         (unless timer
-          (let((that this))
+          (let ((that this))
             (set! timer (new timer% [interval 17] 
                              [notify-callback (λ _ (send that run))]))))
         ))
@@ -97,23 +94,22 @@
           (send timer stop))))
     
     (define/override (on-paint)
+      
       (when (and (*debug*) 
                  ((- (current-inexact-milliseconds) millis) . >= . 3000.0))
-        (printf "~a frames per second   ~a ticks per second~n" 
-                (floor (/ frames 3)) (floor (/ ticks 3)))
+        (printf "~a fps~n" (floor* frames 3))
         (set! millis (current-inexact-milliseconds))
-        (set! frames 0)
-        (set! ticks  0))
-      (set! ticks (add1 ticks))
-      (set! tickmillis (current-inexact-milliseconds))
+        (set! frames 0))
       
       (unless game-over?
         (send game tick (send input-handler active-keys))
         (when (send game over?) 
           (play-effect 'game-over)
           (set! game-over? #t)))
+      
       (let-values ([(w h) (get-client-size)])
         (render game (get-dc) w h))
+      
       (play-effects (send game get-sounds))
       (set! frames (add1 frames)))
   
