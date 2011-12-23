@@ -35,7 +35,7 @@
     (stretchable-width #f)
     (show #t))
   
-  (when *debug*
+  (when (*debug*)
     (let ((bblit (make-solid-bitmap 16 16 "blue"))
           (wblit (make-solid-bitmap 16 16 "white")))
     (register-collecting-blit canvas 2 2 16 16 bblit wblit)))
