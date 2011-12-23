@@ -5,9 +5,19 @@
          "utils.rkt"
          "tile.rkt")
 
+(define room%
+  (class object% (super-new)
+    
+    
+    ))
 
-     
-  
+(define path%
+  (class object% (super-new)
+    
+    
+    ))
+
+
 (define level%
   (class object% (super-new)
     (define/public (get-rooms) (void)) 
@@ -24,11 +34,11 @@
     (define/public (remove-room room) (void))
     (define/public (remove-path path) (void))
     
-    (define/public (connected? room room) 
-      (void))
+    (define/public (connected? room room) (void))
       
-      
-      
+    ))
+
+    
       
       
       
