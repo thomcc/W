@@ -5,59 +5,59 @@
          "utils.rkt"
          "tile.rkt")
 
-(define room%
-  (class object% (super-new)
-    (field [paths-out '()]
-           [paths-in  '()]
-           [room-data  #f])
-    
-    (define/public (add-outgoing path) (set! paths-out (cons path paths-out)))
-    (define/public (add-incoming path) (set! paths-in (cons path paths-in)))
-    (define/public (set-data rdata) (set! room-data rdata))
-    
-    (define/public (get-outgoing) paths-out)
-    (define/public (get-incoming) paths-in)
-    (define/public (get-data)     room-data)
-    
-    ))
 
-(define path%
-  (class object% (super-new)
-    (init-field source dest type) 
-    (send source add-outgoing this)
-    (send dest   add-incoming this)
-    (define/public (get-rooms) (cons source dest))
-    (define/public (get-type) type)
-    
-    
-    
-    ))
+;; rooms
+(provide (struct-out room) add-path-in add-path-out)
+(struct room (paths-in paths-out rdata) #:transparent #:mutable)
+
+(define (add-path-in rm path)
+  (struct-copy room rm [paths-in (cons path (room-paths-in rm))]))
+
+(define (add-path-out rm path)
+  (struct-copy room rm [paths-out (cons path (room-paths-out rm))]))
+
+(define (adjacent? room1 room2) 
+  (for/or ([p (room-paths-out room1)])
+    (eq? (get-opposite room1 p)
+         room2)))
+
+;; paths
+(provide (struct-out path) make-path path-rooms opposite)
+
+(struct path (src dst pdata) #:transparent #:mutable)
+
+(define (make-path src dst pdata)
+  (let ((p (path #f #f pdata)))
+    (set-room-paths-out! p (add-path-out p))
+    (set-room-paths-in!  p (add-path-in p))
+    p))
+
+(define (path-rooms path) (cons (path-src path) (path-dst path)))
+
+(define (opposite p rm)
+  (let ((rs (path-rooms p)))
+    (unless (or (eq? rm (car rs)) (eq? rm (cdr rs)))
+      (error 'opposite "room not connected to path p: ~a rm: ~a" p rm))
+    (if (eq? rm (car rs)) (car rs) (cdr rs))))
 
 
-(define level%
-  (class object% (super-new)
-    (field [rooms '()]
-           [paths '()])
-    
-    (define/public (get-outgoing room) (void))
-    (define/public (get-incoming room) (void))
-    
-    (define/public (get-end-rooms path) (void))
-    
-    (define/public (add-room room) (void))
-    (define/public (add-path room room type) (void))
-    
-    (define/public (remove-room room) (void))
-    (define/public (remove-path path) (void))
-    
-    (define/public (connected? room room) (void))
-      
-    ))
 
-    
-      
-      
-      
+;; levels
+(provide (struct-out level)
+         make-level add-room
+         add-path connect-rooms)
+
+(struct level (rooms paths) #:transparent #:mutable)
+
+(define (make-level [rooms '()] [paths '()]) (level rooms paths))
+
+(define (add-room lvl rm)  
+  (struct-copy level lvl [rooms (cons rm  (level-rooms lvl))]))
+
+(define (add-path lvl pth) 
+  (struct-copy level lvl [paths (cons pth (level-paths lvl))]))
+
+(define (connect-rooms lvl rm1 rm2 pdata) (add-path lvl (make-path rm1 rm2 pdata)))      
       
       
 
