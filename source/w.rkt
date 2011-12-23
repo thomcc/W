@@ -137,8 +137,9 @@
     (make-object
         (class frame%
           (define/augment (on-close)
-            (semaphore-post semaphore)
-            (inner (void) on-close))
+              
+              (semaphore-post semaphore)
+              (inner (void) on-close))
           (super-new)) *game-name*))
   
   (define canvas (make-object cvs frame))
