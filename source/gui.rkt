@@ -54,15 +54,15 @@
     (send* (get-dc) 
       (set-scale *scale* *scale*)
       (set-background "black"))
+    
     (define input-handler (make-object input-handler%))
-    (define pause? #f)
-    (define game (make-object game%))
-    (define millis (current-inexact-milliseconds))
-    (define frames 0)
-    (define abort? #f)
-    (define game-over? #f)
-    (define running? #f)
-    (define timer #f)
+    (define game          (make-object game%))
+    (define millis        (current-inexact-milliseconds))
+    (define frames        0)
+    (define game-over?    #f)
+    (define running?      #f)
+    (define timer         #f)
+    
     (define/override (on-char ev)
       (send input-handler on-char ev)
       (when (or (and game-over? 
@@ -74,11 +74,10 @@
       
       (send input-handler on-char ev)
       (refresh))
-    (define/public (run)
-      (unless abort?
-        (when (set-member? (send input-handler active-keys) 'abort) 
-          (set! abort? #t))
-        (refresh)))
+    
+    (define/public (run) 
+      (refresh))
+    
     (define/public (start)
       (unless running?
         (set! running? #t)
