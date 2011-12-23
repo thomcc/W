@@ -7,12 +7,19 @@
 
 (define room%
   (class object% (super-new)
-    
-    
+    (field [paths-out '()]
+           [paths-in  '()]
+           [room-data #f])
+    (define/public (add-outgoing path) (set! paths-out (cons path paths-out)))
+    (define/public (add-incoming path) (set! paths-in (cons path paths-in)))
+    (define/public (get-outgoing) paths-out)
+    (define/public (get-incoming) paths-in)
     ))
 
 (define path%
   (class object% (super-new)
+    (field [source #f]
+           [dest   #f])
     
     
     ))
@@ -20,8 +27,8 @@
 
 (define level%
   (class object% (super-new)
-    (define/public (get-rooms) (void)) 
-    (define/public (get-paths) (void))
+    (field [rooms '()]
+           [paths '()])
     
     (define/public (get-outgoing room) (void))
     (define/public (get-incoming room) (void))
