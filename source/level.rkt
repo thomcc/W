@@ -73,6 +73,24 @@
     )
 ;; now, do i got the chops ;)
 
+(struct room (data width height) #:transparent #:mutable)
+
+(define (room-contains? room pt)
+  (and (non-negative-integer? (car pt))
+       (non-negative-integer? (cdr pt))
+       (< (car pt) (room-width  room))
+       (< (cdr pt) (room-height room))))
+
+(define (get-tile [room (current-room)] #:at posn)
+  (if (room-contains? room posn)
+      (vref room (cdr posn) (car posn))
+      #f))
+
+(define (set-tile [room (current-room)] #:at posn #:style tile)
+  (if (room-contains? room posn) 
+      (vset! room (cdr posn) (car posn) tile)
+      (printf "warning! position out of bounds: position: ~a room: ~a style: ~a"
+              posn room tile)))
 
 
 (define (startlevel)
