@@ -15,12 +15,14 @@
                           (let ((tt (init-teleport (cons x y))))
                             (push! teles (cons tt (cdr p)))
                             tt)]
-                         [(1 0) ; screen contains the position of a thing it activates
+                         [(1 0) ; screen contains the position of a thing 
+                               ; it activates or a function
                           (let ((ss (init-screen (eq? (car p) 1) (cons x y))))
                             (push! screens (cons ss (cdr p)))
                             ss)]
                          [(> v) ; door contains open and locked
-                          (init-door (if (eq? (car p) '>) 'lr 'ud) (cons x y) (second p) (third p))])]
+                          (init-door (if (eq? (car p) '>) 'lr 'ud) 
+                                     (cons x y) (second p) (third p))])]
                       [else
                        (case p
                          [(g) (init-grass (cons x y))]
@@ -31,10 +33,47 @@
                          [(y) (init-yes-f (cons x y))]
                          [(n) (init-no-f  (cons x y))]
                          [(s) (init-sand (cons x y))])])))])
-    (for-each (λ (t) (set-teleport-dest! (car t) (vref v (cddr t) (cadr t)))) teles)
-    (for-each (λ (s) (set-screen-controls! (car s) (if (procedure? (cdr s)) (cdr s)
-                                                       (vref v (cddr s) (cadr s))))) screens)
+    (for ([t (in-list teles)])
+      (set-teleport-dest! 
+       (car t)
+       (vref v (cddr t) (cadr t))))
+    
+    (for ([s (in-list screens)])
+      (set-screen-controls! 
+       (car s)
+       (if (procedure? (cdr s))
+           (cdr s)
+           (vref v (cddr s) (cadr s)))))
+    
     (level v spawn exits)))
+
+  
+                                      
+
+
+;; this is, i think, what i would like to write.
+#;(define-room (start #:dimensions '(10 . 6))
+  
+    (fill    #:style 'floor)
+    (outline #:style 'wall)
+             
+    (screen     #:at '(1 . 0) #:toggles '(7 . 5)  #:states 2)
+    (teleporter #:at '(2 . 2) #:zaps-to '(5 . 4))
+    (teleporter #:at '(5 . 4) #:zaps-to '(2 . 2))
+    
+    
+    (door #:at '(7 . 5) #:faces 'up/down #:locked #t) 
+    (door #:at '(4 . 3) #:faces 'left/right)
+    
+    
+    (draw-line  #:from '(4 . 0) #:to '(4 . 5) #:style 'wall)
+    (draw-line  #:from '(6 . 5) #:to '(4 . 5) #:style 'wall 
+                #:except-over '(door))
+    
+    )
+;; now, do i got the chops ;)
+
+
 
 (define (startlevel)
   #(#(w (0 7 . 5) w  w        w w        w  w w w)
