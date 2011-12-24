@@ -119,6 +119,15 @@
       (set-tile room #:at (cons 0 y) #:style tile)
       (set-tile room #:at (cons (sub1 width) y) #:style tile))))
 
+(define (fill [room (current-room)] #:at[posn (cons 0 0)] #:style[tile 'wall])
+  (let recur ([x (car posn)] [y (cdr posn)])
+    (when (and (room-contains? room x y) 
+               (eq? tile (get-tile room #:at (cons x y))))
+      (set-pixel room #:at (cons x y) #:style tile)
+      (recur (add1 x) y)
+      (recur (sub1 x) y)
+      (recur x (add1 y))
+      (recur x (sub1 y)))))
 
 
 (define (startlevel)
