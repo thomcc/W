@@ -143,6 +143,28 @@
        (parameterize ([current-room (make-room init-arg ...)])
          body ...))]))
 
+;; something like: 
+;(struct tile (type posn state on-change) #:mutable #:transparent)
+
+(define (screen [room (current-room)]
+                #:at posn
+                #:states[states 2] 
+                #:toggles[toggles #f]
+                #:performs[func #f])
+  (let* ([fnc1 (if (not toggles) 
+                   void
+                   (lambda _
+                     (for ([i (in-list (ensure-list toggles))])
+                       (toggle-tile room #:at i))))]
+         [fnc2 (if (not func) void func)]
+         [fnc (λ _ (fnc1)(fnc2))]) 
+    (add-use-hook room fnc #:at posn)))
+
+
+
+
+
+
 (define (startlevel)
   #(#(w (0 7 . 5) w  w        w w        w  w w w)
     #(w f  f        f w  f        f  f f w)
