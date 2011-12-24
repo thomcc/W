@@ -109,6 +109,15 @@
         (set! y (+ yi y))
         (set-pixel room #:at `(,(floor* x) . ,(floor* y)) #:style tile)))))
 
+(define (outline [room (current-room)] #:style [tile 'wall])
+  (let ([width (room-width room)]
+        [height (room-height room)])
+    (for ([x (in-range width)])
+      (set-tile room #:at (cons x 0) #:style tile)
+      (set-tile room #:at (cons x (sub1 height)) #:style tile))
+    (for ([y (in-range height)])
+      (set-tile room #:at (cons 0 y) #:style tile)
+      (set-tile room #:at (cons (sub1 width) y) #:style tile))))
 
 
 
