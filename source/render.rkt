@@ -73,8 +73,8 @@
     (for ([e (in-list dyn)])
       (let-values (((x y name step) (send e get-draw-info)))
         (draw-animation name step 
-                        (inexact->exact (* 16.0 x)) 
-                        (inexact->exact (* 16.0 y))
+                        (inexact->exact (floor (* 16.0 x)))
+                        (inexact->exact (floor (* 16.0 y)))
                         dc))))  
   (when (send game over?) (draw-game-over dc)))
 

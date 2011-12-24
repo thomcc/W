@@ -7,8 +7,8 @@
 (define (make-level sh spawn exits)
   (let* ([teles '()]
          [screens '()]
-         [v (for/vector ([row sh] [y (in-naturals)])
-              (for/vector ([p row][x (in-naturals)])
+         [v (for/vector ([row (in-vector sh)] [y (in-naturals)])
+              (for/vector ([p (in-vector row)][x (in-naturals)])
                 (cond [(pair? p)
                        (case (car p)
                          [(t) ; teleport contains the position of its destination.
@@ -66,8 +66,8 @@
     (vset! ll 0 2 (cons 0 ff))
     ll))
 (define (make-exportable level)
-      (for/vector ((j (level-data level)))
-        (for/vector ((i j))
+      (for/vector ((j (in-vector (level-data level))))
+        (for/vector ((i (in-vector j)))
           (let ((sn (struct-name i)))
             (case sn
               [(screen) (if (screen-on? i) 'screen-on 'screen-off)]
@@ -77,34 +77,36 @@
               [else sn])))))
 
 (define (leveldata-map f data)
-  (for/vector ([y data])
-    (for/vector ([x y])
+  (for/vector ([y (in-vector data)])
+    (for/vector ([x (in-vector y)])
       (f x))))
 
 (define (level-map f l) (struct-copy level l [data (leveldata-map f (level-data l))]))
 
 (define (leveldata-for-each f d)
-  (for ([row d][y (in-naturals)] #:when #t [p row][x (in-naturals)])
+  (for ([row (in-vector d)][y (in-naturals)] #:when #t 
+                           [p (in-vector row)][x (in-naturals)])
     (f d x y)))
 
 (define (level-count f l) (leveldata-count f (level-data l)))
 
 (define (leveldata-count f d)
   (for*/fold ([i 0])
-    ([row d]
-     [p row]
+    ([row (in-vector d)]
+     [p (in-vector row)]
      #:when (f p))
     (add1 i)))
 
 (define (screens-on+off level)
   (for*/fold ([on 0] [off 0]) 
-    ([row level][p row] #:when (screen? p))
+    ([row (in-vector level)][p (in-vector row)] #:when (screen? p))
     (if (screen-on? p) 
         (values (add1 on) off) 
         (values on (add1 off)))))
 
 (define (on+off-sc-posns level)
-  (for*/fold ([ons '()] [offs '()]) ([row level] [p row] #:when (screen? p))
+  (for*/fold ([ons '()] [offs '()]) 
+    ([row (in-vector level)] [p (in-vector row)] #:when (screen? p))
     (if (screen-on? p) 
         (values (cons (cons (tile-x p) (tile-y p)) ons) offs)
         (values ons (cons (cons (tile-x p) (tile-y p)) offs)))))
@@ -146,8 +148,12 @@
 
                                        
 (define (scramble lo)
-  (let ([l (shuffle (for*/list ([row (level-data lo)] [p row] #:when (screen? p)) p))])
-    (for ([i (in-range 10)]) 
+  (let ([l (shuffle 
+            (for*/list 
+                ([row (in-vector (level-data lo))] 
+                 [p (in-vector row)] #:when (screen? p)) 
+              p))])
+    (for ([i (in-range 15)]) 
       (let ((s (random-element l)))
         (use-screen s)
         ((screen-controls s) (level-data lo) #t #t))))
@@ -199,7 +205,7 @@
     (define failed? (make-state=? failure))
     (define (permute-wrong ld) 
       (let ([w (map = solution (map (λ (s) (if (screen-on? s) 1 0)) (get-screens ld)))])
-        (for ([p w] [x (in-range 1 9)])
+        (for ([p (in-list w)] [x (in-range 1 9)])
           (vset! ld 4 x (if p (init-yes-f)(init-no-f))))))
     (define (check-ld ld game) 
       (cond [(solved? ld) (send game teleport-player (vref ld 1 7))]
