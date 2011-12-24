@@ -129,6 +129,19 @@
       (recur x (add1 y))
       (recur x (sub1 y)))))
 
+;; okay im beginning to see how this is going to work.
+(define (make-empty-room #:dimensions posn #:initially[init-style #f])
+  (let ((w (car posn)) (h (cdr posn)))
+    (room w h (build-vector h (λ _ (build-vector w (λ _ init-style)))))))
+
+(define current-room (make-parameter (make-empty-room #:dimensions 10 6)))
+
+(define-syntax define-room
+  (syntax-rules ()
+    [(_ (name init-arg ...)  body ...)
+     (define name
+       (parameterize ([current-room (make-room init-arg ...)])
+         body ...))]))
 
 (define (startlevel)
   #(#(w (0 7 . 5) w  w        w w        w  w w w)
