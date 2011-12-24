@@ -92,6 +92,25 @@
       (printf "warning! position out of bounds: position: ~a room: ~a style: ~a"
               posn room tile)))
 
+(define (draw-line [room (current-room)] 
+                   #:from        from-posn 
+                   #:to          to-posn 
+                   #:style       [style 'wall]
+                   #:except-over [preserve '()])
+  (let* ([dx (- (car to-posn) (car from-posn))]
+         [dy (- (cdr to-posn) (cdr from-posn))]
+         [steps (if (> (abs dx) (abs dy)) (abs dx) (abs dy))]
+         [xi (/ dx steps)]
+         [yi (/ dy steps)])
+    (set-tile room #:at from-posn #:style tile)
+    (let ((x (car from-posn)) (y (cdr from-position)))
+      (for ([k (in-range steps)])
+        (set! x (+ xi x))
+        (set! y (+ yi y))
+        (set-pixel room #:at `(,(floor* x) . ,(floor* y)) #:style tile)))))
+
+
+
 
 (define (startlevel)
   #(#(w (0 7 . 5) w  w        w w        w  w w w)
