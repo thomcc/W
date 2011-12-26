@@ -47,11 +47,6 @@
     
     (level v spawn exits)))
 
-  
-                                      
-
-
-;; this is, i think, what i would like to write.
 #;(define-room (start #:dimensions '(10 . 6))
   
     (fill    #:style 'floor)
@@ -71,13 +66,32 @@
                 #:except-over '(door))
     
     )
-;; now, do i got the chops ;)
+
 
 (struct room (data width height) #:transparent #:mutable)
+(define (make-door [room (current-room)] 
+                   #:at posn
+                   #:faces[dir 'up/down] 
+                   #:locked[locked? #f])
+  (void)
+  
+  )
+  (define toggle void)
+
+(define (make-toggle-fn at)
+  (if (null? at) void
+      (lambda (room)
+        (for ([p (in-list (ensure-list at))])
+          (toggle room #:at p)))))
+
+(define (combine-fns . fns)
+  (lambda (room)
+    (for ([fn (in-list fns)])
+      (fn room))))
 
 (define (room-contains? room pt)
-  (and (non-negative-integer? (car pt))
-       (non-negative-integer? (cdr pt))
+  (and (> (car pt) 0)
+       (> (car pt) 0)
        (< (car pt) (room-width  room))
        (< (cdr pt) (room-height room))))
 
@@ -103,11 +117,11 @@
          [xi (/ dx steps)]
          [yi (/ dy steps)])
     (set-tile room #:at from-posn #:style tile)
-    (let ((x (car from-posn)) (y (cdr from-position)))
+    (let ((x (car from-posn)) (y (cdr from-posn)))
       (for ([k (in-range steps)])
         (set! x (+ xi x))
         (set! y (+ yi y))
-        (set-pixel room #:at `(,(floor* x) . ,(floor* y)) #:style tile)))))
+        (set-tile room #:at `(,(floor* x) . ,(floor* y)) #:style tile)))))
 
 (define (outline [room (current-room)] #:style [tile 'wall])
   (let ([width (room-width room)]
@@ -123,7 +137,7 @@
   (let recur ([x (car posn)] [y (cdr posn)])
     (when (and (room-contains? room x y) 
                (eq? tile (get-tile room #:at (cons x y))))
-      (set-pixel room #:at (cons x y) #:style tile)
+      (set-tile room #:at (cons x y) #:style tile)
       (recur (add1 x) y)
       (recur (sub1 x) y)
       (recur x (add1 y))
@@ -134,7 +148,7 @@
   (let ((w (car posn)) (h (cdr posn)))
     (room w h (build-vector h (λ _ (build-vector w (λ _ init-style)))))))
 
-(define current-room (make-parameter (make-empty-room #:dimensions 10 6)))
+(define current-room (make-parameter (make-empty-room #:dimensions '(10 . 6))))
 
 (define-syntax define-room
   (syntax-rules ()
@@ -145,21 +159,6 @@
 
 ;; something like: 
 ;(struct tile (type posn state on-change) #:mutable #:transparent)
-
-(define (screen [room (current-room)]
-                #:at posn
-                #:states[states 2] 
-                #:toggles[toggles #f]
-                #:performs[func #f])
-  (let* ([fnc1 (if (not toggles) 
-                   void
-                   (lambda _
-                     (for ([i (in-list (ensure-list toggles))])
-                       (toggle-tile room #:at i))))]
-         [fnc2 (if (not func) void func)]
-         [fnc (λ _ (fnc1)(fnc2))]) 
-    (add-use-hook room fnc #:at posn)))
-
 
 
 
