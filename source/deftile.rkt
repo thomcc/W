@@ -13,3 +13,18 @@
   #:property prop:deadly? #f)
 
 
+(define (add-on-step! t fn)
+  (let ((tos (tile-on-step t)))
+    (set-tile-on-step! (cons fn tos))))
+
+(define (add-on-use! t fn)
+  (let ((tos (tile-on-step t)))
+    (set-tile-on-step! (cons fn tos))))
+
+(define (use-tile t)
+  (let ((tr (tile-room t)))
+    (for-each (λ (x) (x tr)) (tile-on-use t))))
+
+(define (step-tile t)
+  (let ((tr (tile-room t)))
+    (for-each (λ (x) (x tr)) (tile-on-step t))))
