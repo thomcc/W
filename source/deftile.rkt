@@ -28,3 +28,21 @@
 (define (step-tile t)
   (let ((tr (tile-room t)))
     (for-each (λ (x) (x tr)) (tile-on-step t))))
+
+
+(define-syntax deftile
+  (syntax-rules ()
+    [(_ (name super) fields is-solid? is-deadly?)
+     (struct name super fields #:transparent #:mutable
+       #:property prop:render-name (quote name)
+       #:property prop:deadly? is-deadly?
+       #:property prop:solid? is-solid?)]
+    [(_ name-no-sup fields is-solid? is-deadly?)
+     (deftile (name-no-sup tile) fields is-solid? is-deadly?)]
+    [(_ name) (deftile name () #f #f)]
+    [(_ name (fld ...)) (deftile name (fld ...) #f #f)]
+    [(_ name is-solid?) (deftile name () is-solid? #f)]
+    [(_ name (fld ...) is-solid?) (deftile name (fld ...) is-solid? #f)]
+    [(_ name is-solid? is-deadly?) (deftile name () is-solid? is-deadly?)]))
+
+
