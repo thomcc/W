@@ -23,14 +23,16 @@
       #:mutable)
     (define pressed (keys))
     (define (keys->set ks)
-      (set-remove (seteq (when (keys-up ks) 'up)
-                         (when (keys-down ks) 'down)
-                         (when (keys-left ks) 'left)
-                         (when (keys-right ks) 'right)
-                         (when (and (*debug*) (keys-godmode ks)) 'godmode)
-                         (when (keys-restart ks) 'restart)
-                         (when (keys-use ks) 'use))
-              (void)))
+      (set-remove 
+       (seteq 
+        (when (keys-up ks) 'up)
+        (when (keys-down ks) 'down)
+        (when (keys-left ks) 'left)
+        (when (keys-right ks) 'right)
+        (when (and (*debug*) (keys-godmode ks)) 'godmode)
+        (when (keys-restart ks) 'restart)
+        (when (keys-use ks) 'use))
+       (void)))
     (define/public (active-keys)
       (keys->set pressed))
     (define/public (on-char ev)
@@ -81,9 +83,10 @@
       (unless running?
         (set! running? #t)
         (unless timer
-          (set! timer (new timer% [interval 17] 
-                           [notify-callback 
-                            (λ _ (send this run))])))))
+          (set! timer 
+                (new timer% [interval 17] 
+                     [notify-callback 
+                      (λ _ (send this run))])))))
     
     (define/public (stop)
       (when running?
