@@ -12,6 +12,18 @@
   #:property prop:solid?  #f
   #:property prop:deadly? #f)
 
+(define (tile-deadly? t)
+  (let ((d (deadly? t)))
+    (cond [(boolean? d) d]
+          [(number? d) (vector-ref (struct->vector t) d)]
+          [else (printf "tile-deadly?: invalid value for deadly? in ~a.~ndeadly: ~a" 
+                        t d) #t])))
+(define (tile-solid? t)
+  (let ((s (solid? t)))
+    (cond [(boolean? s) s]
+          [(number? s) (vector-ref (struct->vector t) s)]
+          [else (printf "tile-deadly?: invalid value for deadly? in ~a.~ndeadly: ~a" 
+                        t s) #t])))
 
 (define (add-on-step! t fn)
   (let ((tos (tile-on-step t)))
@@ -46,3 +58,17 @@
     [(_ name is-solid? is-deadly?) (deftile name () is-solid? is-deadly?)]))
 
 
+(deftile grass)
+(deftile floor)
+(deftile screen #t)
+(deftile dirt)
+(deftile test)
+(deftile sand)
+(deftile teleporter)
+(deftile wall #t)
+(deftile lava #f #t)
+
+(deftile switch (on?) #f)
+(deftile (floor-2 switch))
+(deftile (screen-1 switch) #t) 
+(deftile (door switch) (open?) (struct-field-index open?))
