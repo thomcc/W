@@ -1,6 +1,13 @@
 #lang racket/gui
-(require "utils.rkt")
-(require racket/runtime-path racket/vector)
+
+(require "utils.rkt"
+         racket/runtime-path
+         racket/require
+         racket/flonum
+         racket/fixnum
+         #;(filtered-in
+          (λ (name) (regexp-replace #rx"unsafe-" name ""))
+          racket/unsafe/ops))
 (provide render)
 (define square-hash
   #hasheq((player-r        . (0 . 2))
@@ -37,8 +44,8 @@
 (define square-size.0 16.0)
 (define squares
   (for/hasheq (((k v) (in-hash square-hash)))
-    (values k (cons (* square-size (car v))
-                    (* square-size (cdr v))))))
+    (values k (cons (fx* square-size (car v))
+                    (fx* square-size (cdr v))))))
 
 (define-runtime-path image-location "../res/img.png")
 (define the-bitmap (read-bitmap image-location 'png/alpha))
@@ -47,8 +54,8 @@
 (define animations
   (for/hasheq (((k v) (in-hash anim-hash)))
     (values k (for/vector ((c (in-vector v)))
-                (cons (* anim-size (car c)) 
-                      (* anim-size (cdr c)))))))
+                (cons (fx* anim-size (car c)) 
+                      (fx* anim-size (cdr c)))))))
 
 
 
@@ -60,35 +67,37 @@
 (define (draw-game-over xo yo dc)
   (let-values (((sx sy) (send dc get-scale)))
     (send dc set-scale 8 8)
-    (send dc draw-bitmap-section the-bitmap (+ xo 18) (+ yo 12) (* 16 7) 16 64 16)
-    (send dc draw-bitmap-section the-bitmap (+ xo 18) (+ yo 36) (* 16 12) 16 64 16)
+    (send dc draw-bitmap-section the-bitmap 
+          (fx+ xo 18) (fx+ yo 12) (fx* 16 7) 16 64 16)
+    (send dc draw-bitmap-section the-bitmap 
+          (fx+ xo 18) (fx+ yo 36) (fx* 16 12) 16 64 16)
     (send dc set-scale sx sy)))
 
 (define (render game dc w h)
   (let ((level (send game get-level))
         (dyn   (send game get-dynamic)))
     (send dc clear)
-    (let* ((ghei (* square-size (vector-length level)))
-           (gwid (* square-size (vector-length (vector-ref level 0))))
-           (wdif (- h ghei))
-           (hdif (- w ghei)))
+    (let* ((ghei (fx* square-size (vector-length level)))
+           (gwid (fx* square-size (vector-length (vector-ref level 0))))
+           (wdif (fx- h ghei))
+           (hdif (fx- w ghei)))
       (when (or (negative? wdif) (negative? hdif))
         (printf "uh oh! screen is too small: game-width: ~a game-height: ~a w: ~a h: ~a~n"
               ghei gwid w h))
-      (let ((x-offset (min (/ wdif 2) 0))
-            (y-offset (min (/ hdif 2) 0)))
+      (let ((x-offset (fxmin (fxquotient wdif 2) 0))
+            (y-offset (fxmin (fxquotient hdif 2) 0)))
         
         ;; draw the tiles
         (for ([row  (in-vector level)] 
-              [yi   (in-range 0 (* square-size (vector-length level)) square-size)] 
+              [yi   (in-range 0 (fx* square-size (vector-length level)) square-size)] 
               #:when #t
               [spot (in-vector row)]   
-              [xi (in-range 0 (* square-size (vector-length row)) square-size)])
+              [xi (in-range 0 (fx* square-size (vector-length row)) square-size)])
           (let ((pt (hash-ref
                      squares spot
                      (λ (e) (printf "draws: not-found: ~a~n" e) '(0 . 0)))))
             (send dc draw-bitmap-section the-bitmap 
-                  (+ x-offset xi) (+ y-offset yi)
+                  (fx+ x-offset xi) (fx+ y-offset yi)
                   (car pt)        (cdr pt) 
                   square-size     square-size)))
         
@@ -96,8 +105,8 @@
         (for ([e (in-list dyn)])
           (let-values (((x y name step) (send e get-draw-info)))
             (draw-animation name step
-                             (+ x-offset (inexact->exact (floor (* square-size.0 x))))
-                             (+ y-offset (inexact->exact (floor (* square-size.0 y))))
+                             (fx+ x-offset (fl->fx (flfloor (fl* square-size.0 x))))
+                             (fx+ y-offset (fl->fx (flfloor (fl* square-size.0 y))))
                              dc)))
         (when (send game over?) (draw-game-over x-offset y-offset dc))))))
 

@@ -17,8 +17,8 @@
     (super-new)
     (init x y)
     (define step 0)
-    (define xx x)
-    (define yy y)
+    (define xx (exact->inexact x))
+    (define yy (exact->inexact y))
     (define/public (get-draw-info) (values xx yy 'zap step))
     (define/public (step!) (set! step (add1 step)))))
 

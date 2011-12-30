@@ -21,7 +21,6 @@
     (make-object
         (class frame%
           (define/augment (on-close)
-              
               (semaphore-post semaphore)
               (inner (void) on-close))
           (super-new)) *game-name*))
@@ -31,8 +30,6 @@
   (send* frame 
     (min-width *width*)
     (min-height *height*)
-    (stretchable-height #f)
-    (stretchable-width #f)
     (show #t))
   
   (when (*debug*)

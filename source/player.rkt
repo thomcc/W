@@ -125,6 +125,6 @@
           (send game deadly? x0 y1)
           (send game deadly? x1 y1)))
             
-    (define/public (get-draw-info) (values x y direction step))
+    (define/public (get-draw-info) (values (exact->inexact x) (exact->inexact y) direction step))
     
     ))

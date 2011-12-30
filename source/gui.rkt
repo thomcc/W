@@ -8,6 +8,7 @@
          "sound.rkt"
          "params.rkt")
 (provide w-canvas%)
+(define timer-interval (/ 1 60))
 (define input-handler%
   (class object%
     (super-new)
@@ -84,7 +85,7 @@
         (set! running? #t)
         (unless timer
           (set! timer 
-                (new timer% [interval 17] 
+                (new timer% [interval (inexact->exact (floor (* 1000.0 timer-interval)))] 
                      [notify-callback 
                       (λ _ (send this run))])))))
     
@@ -108,7 +109,7 @@
           (set! game-over? #t)))
       
       (let-values (((w h) (get-client-size)))
-        (render game (get-dc) (/ w *scale*) (/ h *scale*)))
+        (render game (get-dc) (floor* w *scale*) (floor* h *scale*)))
       
       (play-effects (send game get-sounds))
       (set! frames (add1 frames)))
