@@ -107,7 +107,8 @@
           (play-effect 'game-over)
           (set! game-over? #t)))
       
-      (render game (get-dc))
+      (let-values (((w h) (get-client-size)))
+        (render game (get-dc) (/ w *scale*) (/ h *scale*)))
       
       (play-effects (send game get-sounds))
       (set! frames (add1 frames)))
