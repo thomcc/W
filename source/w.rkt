@@ -26,7 +26,7 @@
               (inner (void) on-close))
           (super-new)) *game-name*))
   
-  (define canvas (make-object cvs frame))
+  (define w-canvas (make-object w-canvas% frame))
   
   (send* frame 
     (min-width *width*)
@@ -38,11 +38,11 @@
   (when (*debug*)
     (let ((bblit (make-solid-bitmap 16 16 "blue"))
           (wblit (make-solid-bitmap 16 16 "white")))
-    (register-collecting-blit canvas 2 2 16 16 bblit wblit)))
+    (register-collecting-blit w-canvas 2 2 16 16 bblit wblit)))
 
-  (send canvas start)
+  (send w-canvas start)
   (void (yield semaphore))
-  (send canvas stop))
+  (send w-canvas stop))
 
 (main)
 

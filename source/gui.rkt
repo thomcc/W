@@ -7,7 +7,7 @@
          "game.rkt"
          "sound.rkt"
          "params.rkt")
-(provide cvs)
+(provide w-canvas%)
 (define input-handler%
   (class object%
     (super-new)
@@ -49,7 +49,7 @@
            )))))
 
 
-(define cvs
+(define w-canvas%
   (class canvas%
     (super-new)
     (inherit get-dc get-client-size refresh)
