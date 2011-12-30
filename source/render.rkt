@@ -57,11 +57,11 @@
     (send dc draw-bitmap-section the-bitmap x y
           (car pt) (cdr pt) anim-size anim-size)))
 
-(define (draw-game-over dc)
+(define (draw-game-over xo yo dc)
   (let-values (((sx sy) (send dc get-scale)))
     (send dc set-scale 8 8)
-    (send dc draw-bitmap-section the-bitmap 18 12 (* 16 7) 16 64 16)
-    (send dc draw-bitmap-section the-bitmap 18 36 (* 16 12) 16 64 16)
+    (send dc draw-bitmap-section the-bitmap (+ xo 18) (+ yo 12) (* 16 7) 16 64 16)
+    (send dc draw-bitmap-section the-bitmap (+ xo 18) (+ yo 36) (* 16 12) 16 64 16)
     (send dc set-scale sx sy)))
 
 (define (render game dc w h)
@@ -99,7 +99,7 @@
                              (+ x-offset (inexact->exact (floor (* square-size.0 x))))
                              (+ y-offset (inexact->exact (floor (* square-size.0 y))))
                              dc)))
-        (when (send game over?) (draw-game-over dc x-offset y-offset))))))
+        (when (send game over?) (draw-game-over x-offset y-offset dc))))))
 
 
 
