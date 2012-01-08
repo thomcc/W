@@ -86,3 +86,32 @@
   (define-values ( xmax  ymax) (values 10 6))
   (let ((d (get-delta (exit-dir x y) #;(opposite (exit-dir x y)))))
     (pt->values (pt-mod (pt+ (cons x y) d) (cons xmax ymax)))))
+
+(define-syntax when-let
+  (syntax-rules ()
+    [(_ ((var val) . rest) body ...)
+     (let ((var val))
+       (when var
+         (let rest
+           body ...)))]))
+
+(define-syntax unless-let
+  (syntax-rules ()
+    [(_ ((var val) . rest) body ...)
+     (let ((var val))
+       (unless var
+         (let rest
+           body ...)))]))
+
+(define-syntax if-not
+  (syntax-rules ()
+    [(_ predicate consequent alternate)
+     (if predicate alternate consequent)]))
+
+(define-syntax if-let
+  (syntax-rules ()
+    [(_ ((var val) . rest) then else)
+     (let ((var val))
+       (if var (let rest then) else))]))
+
+       

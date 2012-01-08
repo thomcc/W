@@ -6,54 +6,43 @@
          "render.rkt"
          "game.rkt"
          "sound.rkt"
-         "params.rkt")
+         "core.rkt")
 (provide w-canvas%)
 (define timer-interval (/ 1 60))
+
 (define input-handler%
   (class object%
     (super-new)
-    (struct keys ([up    #:auto] 
-                  [down  #:auto] 
-                  [left  #:auto] 
-                  [right #:auto] 
-                  [restart #:auto]
-                  [godmode #:auto]
-                  [use   #:auto]) 
-      #:auto-value #f
-      #:transparent
-      #:mutable)
-    (define pressed (keys))
-    (define (keys->set ks)
-      (set-remove 
-       (seteq 
-        (when (keys-up ks) 'up)
-        (when (keys-down ks) 'down)
-        (when (keys-left ks) 'left)
-        (when (keys-right ks) 'right)
-        (when (and (*debug*) (keys-godmode ks)) 'godmode)
-        (when (keys-restart ks) 'restart)
-        (when (keys-use ks) 'use))
-       (void)))
-    (define/public (active-keys)
-      (keys->set pressed))
+    
+    (define pressed (seteq))
+    
+    (define/public (active-keys) pressed)
+    
     (define/public (on-char ev)
-      (let* ([p? (not (eq? 'release (send ev get-key-code)))]
-             [kc (if p? (send ev get-key-code) (send ev get-key-release-code))])
-         (case kc
-           [(up #\w #\W)     (set-keys-up!      pressed p?)]
-           [(down #\s #\S)   (set-keys-down!    pressed p?)]
-           [(right #\d #\D)  (set-keys-right!   pressed p?)]
-           [(left #\a #\A)   (set-keys-left!    pressed p?)]
-           [(space #\space)  (set-keys-use!     pressed p?)]
-           [(#\g #\G)        (set-keys-godmode! pressed p?)]
-           [(escape #\q #\Q) (set-keys-restart! pressed p?)]
-           )))))
+      (let* ([press? (not (eq? 'release (send ev get-key-code)))]
+             [kc (if press? (send ev get-key-code) (send ev get-key-release-code))])
+        (when-let ((key (interpret-key kc)))
+          (if press?
+              (set! pressed (set-add pressed key))
+              (set! pressed (set-remove pressed key))))))
+    
+    (define (interpret-key kc)
+      (case kc
+        [(up #\w #\W)     'up]
+        [(down #\s #\S)   'down]
+        [(right #\d #\D)  'right]
+        [(left #\a #\A)   'left]
+        [(space #\space)  'use]
+        [(#\g #\G)        'godmode]
+        [(escape #\q #\Q) 'restart]
+        ))
+    ))
 
 
 (define w-canvas%
   (class canvas%
     (super-new)
-    (inherit get-dc get-client-size refresh)
+    (inherit get-dc get-client-size refresh get-parent)
     (send* (get-dc) 
       (set-scale *scale* *scale*)
       (set-background "black"))
@@ -65,7 +54,19 @@
     (define game-over?    #f)
     (define running?      #f)
     (define timer         #f)
+    (define scale         *scale*)
     
+    (define/override (on-size w h)
+      (let* ((wsc (/ w PIX_WIDE))
+             (hsc (/ h PIX_HIGH))
+             (sc (min wsc hsc))
+             (ww (* sc PIX_WIDE))
+             (hh (* sc PIX_HIGH)))
+        (set! scale sc)
+        (send (get-dc) set-scale sc sc)
+        ;(send (get-parent) resize ww hh)
+        ))
+        
     
     (define/override (on-char ev)
       (send input-handler on-char ev)
@@ -85,7 +86,8 @@
         (set! running? #t)
         (unless timer
           (set! timer 
-                (new timer% [interval (inexact->exact (floor (* 1000.0 timer-interval)))] 
+                (new timer% [interval (inexact->exact 
+                                       (floor (* 1000.0 timer-interval)))] 
                      [notify-callback 
                       (λ _ (send this run))])))))
     
@@ -96,9 +98,8 @@
           (send timer stop))))
     
     (define/override (on-paint)
-      (when (and (*debug*)
-                 ((- (current-inexact-milliseconds) millis) . >= . 3000.0))
-        (printf "~a fps~n" (floor* frames 3))
+      (when (>= (- (current-inexact-milliseconds) millis) 3000.0)
+        (log-debug (format "~a fps~n" (floor* frames 3)))
         (set! millis (current-inexact-milliseconds))
         (set! frames 0))
       
@@ -109,7 +110,9 @@
           (set! game-over? #t)))
       
       (let-values (((w h) (get-client-size)))
-        (render game (get-dc) (floor* w *scale*) (floor* h *scale*)))
+        (render game (get-dc) 
+                (floor* w *scale*) 
+                (floor* h *scale*)))
       
       (play-effects (send game get-sounds))
       (set! frames (add1 frames)))
