@@ -3,7 +3,7 @@
          racket/class
          "gui.rkt"
          "utils.rkt"
-         "params.rkt")
+         "core.rkt")
 
 
 (define (make-solid-bitmap w h col)
@@ -15,6 +15,8 @@
 
 (define (main)
   (*debug* #t)
+  (*game-name* "W")
+  (*magenta-is-transparent* #f)
   (define semaphore (make-semaphore 0))
   
   (define frame 
@@ -23,7 +25,7 @@
           (define/augment (on-close)
               (semaphore-post semaphore)
               (inner (void) on-close))
-          (super-new)) *game-name*))
+          (super-new)) (*game-name*)))
   
   (define w-canvas (make-object w-canvas% frame))
   
