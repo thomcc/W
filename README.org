@@ -1,48 +1,7 @@
-* W is a game with limitless potential
-
-** Information
-    W was created as my entry into this [[http://www.ludumdare.com/compo/][Ludum Dare Jam 22]] (See [[https://github.com/thomcc/W/downloads][downloads]]
+* W
+    W was created as my entry into [[http://www.ludumdare.com/compo/][Ludum Dare Jam 22]] (See [[https://github.com/thomcc/W/downloads][downloads]]
     or [[https://github.com/thomcc/W/tree/ldjam][this branch]] for what I submitted, the entry itself is located
     [[http://www.ludumdare.com/compo/ludum-dare-22/?action=preview&uid=7728][here]]).
-
-    Now that it is complete, I am going to extend the heck out of it.
-
-** How to play
-
-*** Getting W
-
-**** Mac, Windows, or 64 bit Linux
-
-If you run Mac, Linux (64 bit), or Windows, simply grab the W-App.zip
-(for Mac), W-Lin.tar.gz (for 64 bit Linux), or W-Exe.zip (for
-Windows). Double click the executable inside, (W.app for Mac and W.exe
-for Windows), and if everything should goes well W should open and
-start!
-
-**** Any (who happen to already have Racket 5.2 installed)
-
-W is written in PLT Racket, a dialect of Lisp, and if you happen to
-already have this installed, you can run the code without downloading
-one of the premade executables. To do this, simply download or clone
-this repository, and run "w.rkt" from within the source directory.
-
-Note that for best performance you should not run this within
-DrRacket, running "gracket source/w.rkt" from the command line should
-set the necessary steps in motion for that to happen.
-
-If you do not wish or know how to run this outside of DrRacket, but
-find that it is running too slow and would like to try to fix it, you can
-improve performance by going to the languages menu and ensuring that
-both Debugging and Profiling are turned off.  Additionally, check
-"populate compiled directories" if it is unchecked.
-
-
-*** Controls 
-  - Arrow keys or WASD for movement
-  - Space uses an item you are standing on or facing (teleporters,
-    doors, and screens can currently be used). Space will also restart
-    the game at a game over screen.
-  - Escape restarts the game regardless of where you are.
-
-
-
+  
+    I have changed it since then, however I'm no longer working on
+    it.
